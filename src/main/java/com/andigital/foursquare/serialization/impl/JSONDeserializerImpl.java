@@ -91,7 +91,7 @@ public class JSONDeserializerImpl implements JSONDeserializer<AbstractModel> {
 	}
 	
 	private String getContactNumber(final JsonObject venue) {
-		String contactNumber = "N/A";
+		String contactNumber = "-";
 		final JsonObject contact = venue.getAsJsonObject(CONTACT);
 		if (contact != null) {
 			 final JsonElement phoneNumber = contact.get(FORMATTED_PHONE);
@@ -103,7 +103,7 @@ public class JSONDeserializerImpl implements JSONDeserializer<AbstractModel> {
 	}
 	
 	private String getCheckinCount(final JsonObject venue) {
-		String checkinCount = "N/A";
+		String checkinCount = "-";
 		final JsonObject stats = venue.getAsJsonObject(STATS);
 		if (stats != null) {
 			 final JsonElement checkins = stats.get(CHECKIN_COUNT);

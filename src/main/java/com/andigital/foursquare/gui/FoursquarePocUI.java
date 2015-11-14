@@ -14,6 +14,8 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -40,8 +42,6 @@ final class FoursquarePocUI extends UI {
 
     @Value("${gui.radius.default}")
     private int radiusDefault;
-
-    // default values, needs to be atomic if multiple users do search at the same time
 
     @Autowired
     private FoursquareService foursquareService;
@@ -116,9 +116,10 @@ final class FoursquarePocUI extends UI {
 
 					for (AbstractModel model : response) {
 						ExploreResponseModelObject exploreOption = (ExploreResponseModelObject) model;
+						final List<String> address = exploreOption.getAddress();
+						final String addressLine = StringUtils.join(address, " ");
 						t.addItem(new Object[] { exploreOption.getName(), exploreOption.getContactNumber(),
-								exploreOption.getAddress(), exploreOption.getCheckins() });
-
+								addressLine, exploreOption.getCheckins() }, null);
 					}
 
 				} else {
@@ -136,7 +137,11 @@ final class FoursquarePocUI extends UI {
 
         //Page layout
         HorizontalLayout hl1 = new HorizontalLayout();
-        hl1.addComponent(new FormLayout(tf, cb1, cb2, btn));
+        hl1.addComponent(new FormLayout(tf));
+        hl1.addComponent(new FormLayout(cb1));
+        hl1.addComponent(new FormLayout(cb2));
+        hl1.addComponent(new FormLayout(btn));
+        hl1.setSizeFull();
         HorizontalLayout hl2 = new HorizontalLayout();
         hl2.addComponent(t);
         hl2.setSizeFull();
