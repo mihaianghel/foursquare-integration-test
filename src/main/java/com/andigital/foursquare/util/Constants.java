@@ -10,6 +10,10 @@ public class Constants {
 	
 	public static final String CLIENT_SECRET = "client_secret";
 	
+	public static final String CODE = "code";
+	
+	public static final String ERROR = "errorDetail";
+	
 	public static final String LIMIT = "limit";
 	
 	public static final String NEAR = "near";

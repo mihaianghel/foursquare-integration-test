@@ -36,6 +36,7 @@ public class FoursquareServiceImpl implements FoursquareService {
 
 	protected Logger LOG = LoggerFactory.getLogger(FoursquareServiceImpl.class);
 	
+	@Override
 	public Collection<AbstractModel> execute(String location, Integer radius, Integer limit, Operation operation) {
 
 		final RequestModelObject model = new RequestModelObject(location, radius, limit);

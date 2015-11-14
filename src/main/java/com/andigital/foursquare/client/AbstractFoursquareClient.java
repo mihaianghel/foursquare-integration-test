@@ -29,14 +29,18 @@ public abstract class AbstractFoursquareClient {
 	 * Initialise HTTP client
 	 */
 	public abstract void init();
-	
+
 	/**
 	 * Execute HTTP calls
+	 * @param model object encapsulating user input
+	 * @param operation - /explore in this case. Available for extension
+	 * @return String representation of the response from Foursquare service
 	 */
 	public abstract String execute(RequestModelObject model, Operation operation);
 	
 	/**
 	 * Destroy HTTP client
+	 * @throws IOException
 	 */
 	public abstract void destroy() throws IOException;
 
