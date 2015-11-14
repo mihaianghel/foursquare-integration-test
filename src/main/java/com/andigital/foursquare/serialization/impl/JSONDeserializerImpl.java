@@ -33,8 +33,9 @@ public class JSONDeserializerImpl implements JSONDeserializer<AbstractModel> {
 	}
 
 	@Override
-	public AbstractModel unmarshallMeta(JsonObject meta) {
-		if (meta != null) {
+	public AbstractModel unmarshallMeta(JsonObject json) {
+		if (json != null) {
+			JsonObject meta = json.getAsJsonObject(META);
 			int statusCode = meta.get(CODE).getAsInt();
 			final String error = meta.get(ERROR) != null ? meta.get(ERROR).getAsString() : null;
 			return new Meta(statusCode, error);
@@ -44,8 +45,9 @@ public class JSONDeserializerImpl implements JSONDeserializer<AbstractModel> {
 	}
 
 	@Override
-	public List<AbstractModel> unmarshallResponse(JsonObject response) {
-		if (response != null) {
+	public List<AbstractModel> unmarshallResponse(JsonObject json) {
+		if (json != null) {
+			JsonObject response = json.getAsJsonObject(RESPONSE);
 			final JsonArray groups = response.getAsJsonArray(GROUPS);
 			final Iterator<JsonElement> venuesIterator = groups.iterator();
 			final List<AbstractModel> result = new LinkedList<>();

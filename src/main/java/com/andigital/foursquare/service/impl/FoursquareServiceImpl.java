@@ -63,10 +63,10 @@ public class FoursquareServiceImpl implements FoursquareService {
 			final String fourSquareResponseAsString = getResponseFromCache(model);
 			if (StringUtils.isNotBlank(fourSquareResponseAsString)) {
 				final JsonObject fourSquareResponseAsJson = jsonDeserializer.deserialise(fourSquareResponseAsString);
-				final Meta meta = (Meta) jsonDeserializer.unmarshallMeta(fourSquareResponseAsJson.getAsJsonObject(META));
+				final Meta meta = (Meta) jsonDeserializer.unmarshallMeta(fourSquareResponseAsJson);
 				if (meta.getStatusCode() == HttpStatus.SC_OK) {
 					LOG.info("Successful response from Foursquare API");
-					return jsonDeserializer.unmarshallResponse(fourSquareResponseAsJson.getAsJsonObject(RESPONSE));
+					return jsonDeserializer.unmarshallResponse(fourSquareResponseAsJson);
 				} else {
 					LOG.error(
 							String.format("Request to Foursquare API had incorrect parameters. StatusCode = %s Error = %s",
