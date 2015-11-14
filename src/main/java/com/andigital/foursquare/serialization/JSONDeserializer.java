@@ -8,10 +8,10 @@ import com.google.gson.JsonObject;
  */
 public interface JSONDeserializer<T> {
 	
-	JsonObject deserialise();
+	JsonObject deserialise(String json);
 	
-	T unmarshallMeta();
+	T unmarshallMeta(JsonObject meta);
 	
-	List<T> unmarshallResponse();
+	List<T> unmarshallResponse(JsonObject response);
 
 }

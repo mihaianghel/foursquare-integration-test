@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.andigital.foursquare.model.AbstractModel;
 import com.andigital.foursquare.service.FoursquareService;
+import com.andigital.foursquare.util.Operation;
 
 /**
  * Controller for testing request from broswer
@@ -29,7 +30,7 @@ public class Controller {
 			@RequestParam(value = "limit", required = false) Integer limit,
 			HttpServletRequest request) {
 		
-		return foursquareService.execute(place, radius, limit);
+		return foursquareService.execute(place, radius, limit, Operation.EXPLORE);
 		
 	}
 

@@ -3,6 +3,7 @@ package com.andigital.foursquare.service;
 import java.util.Collection;
 
 import com.andigital.foursquare.model.AbstractModel;
+import com.andigital.foursquare.util.Operation;
 
 
 /**
@@ -10,6 +11,6 @@ import com.andigital.foursquare.model.AbstractModel;
  */
 public interface FoursquareService {
 	
-	Collection<AbstractModel> execute(String location, Integer radius, Integer limit);
+	Collection<AbstractModel> execute(String location, Integer radius, Integer limit, Operation operation);
 
 }
