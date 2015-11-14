@@ -5,12 +5,12 @@ Foursquare Integration Service - proof of concept
 
 This application is a proof of concept for an integration with the Foursquare API
 The frameworks and libraries that were used are:
-1. Spring Boot - for fast bootstrapping of the web app
-2. JUnit and Mockito - for unit testing
-3. Gson - for deserialization
-4. Vaadin - for UI
-5. Apache HTTP Client
-6. Apache Commons IO/Lang - utility libraries
+* **Spring Boot** - for fast bootstrapping of the web app
+* **JUnit and Mockito** - for unit testing
+* **Gson** - for deserialization
+* **Vaadin**- for UI
+* **Apache HTTP Client** - for http calls
+* **Apache Commons IO/Lang** - utility libraries
 
 
 ##Approach
@@ -33,7 +33,9 @@ java -jar target/foursquare-integration-0.0.1-SNAPSHOT.jar
 
 ##Using the application
 After starting the application you can access it in the browser:
-```http://localhost:8080/foursquare/explore```
+```
+http://localhost:8080/foursquare/explore
+```
 
 
 ##Notes
@@ -45,9 +47,9 @@ this was a tradeoff.
 
 ##Improvements
 
-1. Unit tests
-2. Improved parsing using model objects for the response from the service
-3. Caching should not be in memory
-4. The UI doesn't respect the separation of concerns paradigm
-5. Validations of the user input
+*Unit tests
+*Improved parsing using model objects for the response from the service
+*Caching should not be in memory
+*The UI doesn't respect the separation of concerns paradigm
+*Validations of the user input
 
