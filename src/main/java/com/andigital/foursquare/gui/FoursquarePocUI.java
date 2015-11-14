@@ -101,13 +101,10 @@ final class FoursquarePocUI extends UI {
 
 		btn.addClickListener(event -> {
 			try {
-				// Validate all fields before submitting
 				tf.validate();
 				cb1.validate();
 				cb2.validate();
 
-				// If everything is ok, make the table visible, purge previous
-				// data and display new data
 				Collection<AbstractModel> response = foursquareService.execute(tf.getValue(),
 						Integer.valueOf(cb1.getValue().toString()), Integer.valueOf(cb2.getValue().toString()), Operation.EXPLORE);
 				if (!response.isEmpty()) {
@@ -131,9 +128,7 @@ final class FoursquarePocUI extends UI {
             }
         });
 
-        // Add a shortcut to the main text field, when you press ENTER the search is triggered
         tf.addShortcutListener(new Button.ClickShortcut(btn, ShortcutAction.KeyCode.ENTER, null));
-
 
         //Page layout
         HorizontalLayout hl1 = new HorizontalLayout();

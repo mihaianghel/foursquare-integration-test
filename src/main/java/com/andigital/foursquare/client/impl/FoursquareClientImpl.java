@@ -14,6 +14,7 @@ import javax.annotation.PreDestroy;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.NameValuePair;
@@ -41,7 +42,12 @@ public class FoursquareClientImpl extends AbstractFoursquareClient {
 	
 	@PostConstruct
 	public void init() {
-		httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
+		HttpConnectionManagerParams params = new HttpConnectionManagerParams();
+		params.setConnectionTimeout(5000);
+		params.setMaxTotalConnections(50);
+		MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
+		connectionManager.setParams(params);
+		httpClient = new HttpClient(connectionManager);
 		LOG.info("HTTP client initialised");
 	}
 
