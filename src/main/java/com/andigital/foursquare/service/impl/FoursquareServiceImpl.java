@@ -40,23 +40,26 @@ public class FoursquareServiceImpl implements FoursquareService {
 	public Collection<AbstractModel> execute(String location, Integer radius, Integer limit, Operation operation) {
 
 		final RequestModelObject model = new RequestModelObject(location, radius, limit);
-		final String fourSquareResponseAsString = foursquareHttpClient.execute(model, operation);
-		if (StringUtils.isNotBlank(fourSquareResponseAsString)) {
-			final JsonObject fourSquareResponseAsJson = jsonDeserializer.deserialise(fourSquareResponseAsString);
-			final Meta meta = (Meta) jsonDeserializer.unmarshallMeta(fourSquareResponseAsJson.getAsJsonObject(META));
-			if (meta.getStatusCode() == HttpStatus.SC_OK) {
-				LOG.info("Successful response from Foursquare API");
-				return jsonDeserializer.unmarshallResponse(fourSquareResponseAsJson.getAsJsonObject(RESPONSE));
+		try {
+			final String fourSquareResponseAsString = foursquareHttpClient.execute(model, operation);
+			if (StringUtils.isNotBlank(fourSquareResponseAsString)) {
+				final JsonObject fourSquareResponseAsJson = jsonDeserializer.deserialise(fourSquareResponseAsString);
+				final Meta meta = (Meta) jsonDeserializer.unmarshallMeta(fourSquareResponseAsJson.getAsJsonObject(META));
+				if (meta.getStatusCode() == HttpStatus.SC_OK) {
+					LOG.info("Successful response from Foursquare API");
+					return jsonDeserializer.unmarshallResponse(fourSquareResponseAsJson.getAsJsonObject(RESPONSE));
+				} else {
+					LOG.error(
+							String.format("Request to Foursquare API had incorrect parameters. StatusCode = %s Error = %s",
+									meta.getStatusCode(), meta.getError()));
+				}
 			} else {
-				LOG.error(
-						String.format("Request to Foursquare API had incorrect parameters. StatusCode = %s Error = %s",
-								meta.getStatusCode(), meta.getError()));
-				return Collections.singleton(meta);
+				LOG.error("Request to Foursquare API was unsuccessful");
 			}
-		} else {
-			LOG.error("Request to Foursquare API was unsuccessful");
-			return Collections.singleton(
-					new Meta(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Request to Foursquare API was unsuccessful"));
+			return Collections.emptyList();
+		} catch (Exception e) {
+			LOG.error("Unexpected error ocurred during processing", e);
+			return Collections.emptyList();
 		}
 	}
 }
