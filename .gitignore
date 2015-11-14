@@ -1,0 +1,7 @@
+# IDE specific
+.settings/
+bin/
+target
+.classpath
+.project
+.git/
