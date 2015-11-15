@@ -23,8 +23,6 @@ import com.andigital.foursquare.service.FoursquareService;
 import com.andigital.foursquare.util.Operation;
 import com.google.gson.JsonObject;
 
-import static com.andigital.foursquare.util.Constants.*;
-
 /**
  * Service implementation that makes the call to the HTTP client and evaluates the response
  */

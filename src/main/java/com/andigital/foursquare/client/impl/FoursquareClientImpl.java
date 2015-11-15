@@ -73,10 +73,9 @@ public class FoursquareClientImpl extends AbstractFoursquareClient {
 			} finally {
 				get.releaseConnection();
 			}
-			
 		} catch (URISyntaxException e) {
 			LOG.error("Syntax error when building the request url", e);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOG.error("Request to Foursquare API was unsuccessful", e);
 		}
 		return null;

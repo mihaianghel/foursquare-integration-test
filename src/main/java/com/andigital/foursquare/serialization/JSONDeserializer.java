@@ -1,6 +1,6 @@
 package com.andigital.foursquare.serialization;
 
-import java.util.List;
+import java.util.Collection;
 import com.google.gson.JsonObject;
 
 /**
@@ -27,6 +27,6 @@ public interface JSONDeserializer<T> {
 	 * @param response section represented as {@link JsonObject}
 	 * @return list of objects of generic type T
 	 */
-	List<T> unmarshallResponse(JsonObject response);
+	Collection<T> unmarshallResponse(JsonObject response);
 
 }
