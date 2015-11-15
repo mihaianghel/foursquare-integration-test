@@ -54,8 +54,8 @@ ones for a better code coverage and for sticking to the best practices.
 
 ##Improvements
 
-*Unit tests for better coverage
-*Improved parsing using model objects for the response from the service
-*Caching should not be in memory
-*The UI doesn't respect the separation of concerns paradigm
-*Validations of the user input
+* Unit tests for better coverage
+* Improved parsing using model objects for the response from the service
+* Caching should not be in memory
+* The UI doesn't respect the separation of concerns paradigm
+* Validations of the user input
