@@ -1,8 +1,12 @@
 package com.andigital.foursquare.service.impl;
 
+import com.andigital.foursquare.convert.DomainToTransportConverter;
+import com.andigital.foursquare.convert.TransportToDomainConverter;
 import com.andigital.foursquare.dao.FoursquareDAO;
-import com.andigital.foursquare.domain.*;
-import com.andigital.foursquare.dto.ExploreResponseDTO;
+import com.andigital.foursquare.domain.AbstractFoursquareResponse;
+import com.andigital.foursquare.domain.Meta;
+import com.andigital.foursquare.domain.RequestParams;
+import com.andigital.foursquare.domain.Response;
 import com.andigital.foursquare.dto.RequestParamsDTO;
 import com.andigital.foursquare.dto.ResponseDTO;
 import com.andigital.foursquare.service.FoursquareService;
@@ -12,10 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * Implementation for the foursquare service
@@ -28,62 +30,46 @@ public class FoursquareServiceImpl implements FoursquareService {
 
     protected Logger LOG = LoggerFactory.getLogger(FoursquareServiceImpl.class);
 
+    private static final TransportToDomainConverter TRANSPORT_TO_DOMAIN_CONVERTER = new TransportToDomainConverter();
+
+    private static final DomainToTransportConverter DOMAIN_TO_TRANSPORT_CONVERTER = new DomainToTransportConverter();
+
     @Override
     public Collection<ResponseDTO> execute(final RequestParamsDTO requestParamsDTO) {
 
-        final RequestParams requestParams = convertTransferObjectToDomainObject(requestParamsDTO);
+        final RequestParams requestParams = TRANSPORT_TO_DOMAIN_CONVERTER.convert(requestParamsDTO);
         try {
             final AbstractFoursquareResponse foursquareResponse = foursquareDAO.getFoursquareMetadata(requestParams);
-
-            if (isValidResponse(foursquareResponse)) {
-                final Response response = foursquareResponse.getResponse();
-                final Collection<ResponseDTO> exploreResponseDTO = convertDomainObjectsToTransferObjects(response);
-                return exploreResponseDTO;
+            if (foursquareResponse != null) {
+                if (isValidResponse(foursquareResponse)) {
+                    final Response response = foursquareResponse.getResponse();
+                    final Collection<ResponseDTO> exploreResponseDTO = DOMAIN_TO_TRANSPORT_CONVERTER.convert(response);
+                    return exploreResponseDTO;
+                } else {
+                    logErrorsFromFoursquare(foursquareResponse);
+                }
             }
-            return Collections.emptyList();
         } catch (Exception e) {
             LOG.error("Unexpected error occurred during processing", e);
-            return Collections.emptyList();
         }
-    }
-
-    //TODO: use spring converter annotation
-    private RequestParams convertTransferObjectToDomainObject(final RequestParamsDTO requestParamsDTO) {
-        return new RequestParams(requestParamsDTO.getLocation(),
-              requestParamsDTO.getRadius(),
-              requestParamsDTO.getLimit(),
-              requestParamsDTO.getOperation());
-    }
-
-    private List<ResponseDTO> convertDomainObjectsToTransferObjects(final Response response) {
-        final List<ResponseDTO> responseDTOs = new ArrayList<>();
-        response.getGroups().stream()
-              .forEach(group -> group.getItems().stream()
-                    .forEach(item -> {
-                        final Venue venue = item.getVenue();
-                        responseDTOs.add(
-                              new ExploreResponseDTO(venue.getName(),
-                                    venue.getFormattedPhone(),
-                                    venue.getAddress(),
-                                    venue.getCheckinsCount()));
-                    }));
-        return responseDTOs;
-
+        return Collections.emptyList();
     }
 
     private boolean isValidResponse(final AbstractFoursquareResponse foursquareResponse) {
-        if (foursquareResponse != null) {
-            final Meta meta = foursquareResponse.getMeta();
-            if (meta.getCode() == HttpStatus.SC_OK) {
-                return true;
-            } else {
-                LOG.error(
-                      String.format("Request to Foursquare API had incorrect parameters. StatusCode= %s Error= %s",
-                            meta.getCode(), meta.getErrorDetail()));
-            }
+        final Meta meta = foursquareResponse.getMeta();
+        if (meta.getCode() == HttpStatus.SC_OK) {
+            return true;
+        } else {
+            return false;
         }
-        return false;
-
     }
+
+    private void logErrorsFromFoursquare(final AbstractFoursquareResponse foursquareResponse) {
+        final Meta meta = foursquareResponse.getMeta();
+        LOG.error(
+              String.format("Request to Foursquare API had incorrect parameters. StatusCode= %s Error= %s",
+                    meta.getCode(), meta.getErrorDetail()));
+    }
+
 
 }
