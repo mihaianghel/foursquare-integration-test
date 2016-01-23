@@ -20,14 +20,14 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
 
 /**
- * Test for {@link FoursquareClientImpl}
+ * Test for {@link FoursquareClientApache}
  * @author mihaianghel
  */
 @RunWith(MockitoJUnitRunner.class)
-public class FoursquareClientImplTest {
+public class FoursquareClientApacheTest {
 
 	@Mock HttpClient mockHttpClient;
-	private FoursquareClientImpl client = new FoursquareClientImpl();
+	private FoursquareClientApache client = new FoursquareClientApache();
 
 	@Before
 	public void setUp() {
@@ -70,7 +70,7 @@ public class FoursquareClientImplTest {
 
 	private void injectHttpClient() {
 		try {
-			final Field field = FoursquareClientImpl.class.getDeclaredField("httpClient");
+			final Field field = FoursquareClientApache.class.getDeclaredField("httpClient");
 			field.setAccessible(true);
 			field.set(client, mockHttpClient);
 		} catch (NoSuchFieldException | IllegalAccessException ex) {

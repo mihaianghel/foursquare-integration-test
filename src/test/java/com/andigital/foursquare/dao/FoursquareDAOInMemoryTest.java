@@ -1,6 +1,6 @@
 package com.andigital.foursquare.dao;
 
-import com.andigital.foursquare.client.AbstractFoursquareClient;
+import com.andigital.foursquare.client.FoursquareClient;
 import com.andigital.foursquare.domain.AbstractFoursquareResponse;
 import com.andigital.foursquare.domain.RequestParams;
 import com.andigital.foursquare.util.Operation;
@@ -24,7 +24,7 @@ public class FoursquareDAOInMemoryTest {
 
     private static final RequestParams REQUEST_MOCK_DATA = getRequestMockData(Operation.EXPLORE);
 
-    @Mock private AbstractFoursquareClient foursquareClient;
+    @Mock private FoursquareClient foursquareClient;
 
     @Mock private ConcurrentHashMap<RequestParams, AbstractFoursquareResponse> mockCache;
 

@@ -9,7 +9,7 @@ import java.io.IOException;
  * Abstract client for HTTP calls
  * @author mihaianghel
  */
-public abstract class AbstractFoursquareClient {
+public abstract class FoursquareClient {
 	
 	@Value("${4sq.endpoint}")
 	protected String endpoint;

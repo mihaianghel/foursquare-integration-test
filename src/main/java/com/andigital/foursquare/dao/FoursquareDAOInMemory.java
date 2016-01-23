@@ -1,6 +1,6 @@
 package com.andigital.foursquare.dao;
 
-import com.andigital.foursquare.client.AbstractFoursquareClient;
+import com.andigital.foursquare.client.FoursquareClient;
 import com.andigital.foursquare.domain.AbstractFoursquareResponse;
 import com.andigital.foursquare.domain.Explore;
 import com.andigital.foursquare.domain.RequestParams;
@@ -16,11 +16,14 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * In-Memory implementation of FoursquareDAO
+ */
 @Component
 public class FoursquareDAOInMemory implements FoursquareDAO {
 
     @Autowired
-    private AbstractFoursquareClient foursquareClient;
+    private FoursquareClient foursquareClient;
 
     private Map<RequestParams, AbstractFoursquareResponse> CACHE = new ConcurrentHashMap();
 

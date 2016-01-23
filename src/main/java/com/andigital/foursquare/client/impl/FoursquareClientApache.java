@@ -1,6 +1,6 @@
 package com.andigital.foursquare.client.impl;
 
-import com.andigital.foursquare.client.AbstractFoursquareClient;
+import com.andigital.foursquare.client.FoursquareClient;
 import com.andigital.foursquare.domain.RequestParams;
 import com.andigital.foursquare.util.Operation;
 import org.apache.commons.httpclient.HttpClient;
@@ -29,12 +29,12 @@ import java.util.List;
 import static com.andigital.foursquare.util.Constants.*;
 
 /**
- * Implementation of AbstractFoursquareClient
+ * Implementation of FoursquareClient
  */
 @Component
-public class FoursquareClientImpl extends AbstractFoursquareClient {
+public class FoursquareClientApache extends FoursquareClient {
 	
-	protected Logger LOG = LoggerFactory.getLogger(AbstractFoursquareClient.class);
+	protected Logger LOG = LoggerFactory.getLogger(FoursquareClient.class);
 	
 	private HttpClient httpClient;
 	
