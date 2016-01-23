@@ -1,10 +1,13 @@
 package com.andigital.foursquare.service.impl;
 
 import com.andigital.foursquare.dao.FoursquareDAO;
+import com.andigital.foursquare.domain.AbstractFoursquareResponse;
+import com.andigital.foursquare.domain.Explore;
 import com.andigital.foursquare.domain.RequestParams;
 import com.andigital.foursquare.dto.ExploreResponseDTO;
 import com.andigital.foursquare.dto.RequestParamsDTO;
 import com.andigital.foursquare.dto.ResponseDTO;
+import com.andigital.foursquare.serialization.JSONDeserializer;
 import com.andigital.foursquare.util.Operation;
 import com.google.gson.JsonObject;
 import org.junit.Test;
@@ -17,9 +20,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.io.IOException;
 import java.util.Collection;
 
-import static org.mockito.Mockito.*;
-import static com.andigital.foursquare.util.TestDataProvider.*;
+import static com.andigital.foursquare.util.TestDataProvider.getMockResponseFromFoursquareAPI;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
 
 /**
@@ -44,21 +48,11 @@ public class FoursquareServiceImplTest {
         assertEquals(0, result.size());
     }
 
-    @Test
-    public void testBrokenResponseFromDAOLayer() {
-        //given
-        when(foursquareDAO.getFoursquareMetadata(any(RequestParams.class))).thenReturn("123**");
-
-        //when
-        Collection<ResponseDTO> result = service.execute(new RequestParamsDTO("london", 20, 5, Operation.EXPLORE));
-
-        assertEquals(0, result.size());
-    }
-
 	@Test
 	public void testCallIsCorrectlyMade() throws IOException {
 		//given
-		when(foursquareDAO.getFoursquareMetadata(any(RequestParams.class))).thenReturn(getMockResponseFromFoursquareAPI());
+		final AbstractFoursquareResponse response = JSONDeserializer.fromString(getMockResponseFromFoursquareAPI(), Explore.class);
+		when(foursquareDAO.getFoursquareMetadata(any(RequestParams.class))).thenReturn(response);
 
 		//when
 		Collection<ResponseDTO> result = service.execute(new RequestParamsDTO("london", 20, 5, Operation.EXPLORE));

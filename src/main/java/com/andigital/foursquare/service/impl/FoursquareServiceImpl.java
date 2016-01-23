@@ -1,15 +1,12 @@
 package com.andigital.foursquare.service.impl;
 
 import com.andigital.foursquare.dao.FoursquareDAO;
-import com.andigital.foursquare.domain.RequestParams;
+import com.andigital.foursquare.domain.*;
 import com.andigital.foursquare.dto.ExploreResponseDTO;
 import com.andigital.foursquare.dto.RequestParamsDTO;
 import com.andigital.foursquare.dto.ResponseDTO;
-import com.andigital.foursquare.domain.*;
-import com.andigital.foursquare.serialization.JSONDeserializer;
 import com.andigital.foursquare.service.FoursquareService;
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,19 +33,12 @@ public class FoursquareServiceImpl implements FoursquareService {
 
         final RequestParams requestParams = convertTransferObjectToDomainObject(requestParamsDTO);
         try {
-            final String fourSquareResponseAsString = foursquareDAO.getFoursquareMetadata(requestParams);
-            if (StringUtils.isNotBlank(fourSquareResponseAsString)) {
+            final AbstractFoursquareResponse foursquareResponse = foursquareDAO.getFoursquareMetadata(requestParams);
 
-                AbstractFoursquareResponse foursquareResponse = JSONDeserializer.fromString(fourSquareResponseAsString, Explore.class);
-
-                if (isValidResponse(foursquareResponse)) {
-                    final Response response = foursquareResponse.getResponse();
-                    final Collection<ResponseDTO> exploreResponseDTO = convertDomainObjectsToTransferObjects(response);
-                    return exploreResponseDTO;
-                }
-
-            } else {
-                LOG.error("Request to Foursquare API was unsuccessful");
+            if (isValidResponse(foursquareResponse)) {
+                final Response response = foursquareResponse.getResponse();
+                final Collection<ResponseDTO> exploreResponseDTO = convertDomainObjectsToTransferObjects(response);
+                return exploreResponseDTO;
             }
             return Collections.emptyList();
         } catch (Exception e) {

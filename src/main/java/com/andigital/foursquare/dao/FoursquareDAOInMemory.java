@@ -1,7 +1,11 @@
 package com.andigital.foursquare.dao;
 
 import com.andigital.foursquare.client.AbstractFoursquareClient;
+import com.andigital.foursquare.domain.AbstractFoursquareResponse;
+import com.andigital.foursquare.domain.Explore;
 import com.andigital.foursquare.domain.RequestParams;
+import com.andigital.foursquare.serialization.JSONDeserializer;
+import com.andigital.foursquare.util.Operation;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +22,7 @@ public class FoursquareDAOInMemory implements FoursquareDAO {
     @Autowired
     private AbstractFoursquareClient foursquareClient;
 
-    private Map<RequestParams, String> CACHE = new ConcurrentHashMap();
+    private Map<RequestParams, AbstractFoursquareResponse> CACHE = new ConcurrentHashMap();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FoursquareDAOInMemory.class);
 
@@ -31,21 +35,27 @@ public class FoursquareDAOInMemory implements FoursquareDAO {
     }
 
     @Override
-    public String getFoursquareMetadata(RequestParams requestModelObject) {
-        if (!CACHE.containsKey(requestModelObject)) {
+    public AbstractFoursquareResponse getFoursquareMetadata(RequestParams requestParams) {
+        if (!CACHE.containsKey(requestParams)) {
             synchronized (CACHE) {
-                if (!CACHE.containsKey(requestModelObject)) {
+                if (!CACHE.containsKey(requestParams)) {
                     LOGGER.info("Object not found in cache. Making request to Foursquare Service");
-                    final String response = foursquareClient.execute(requestModelObject);
+                    final String response = foursquareClient.execute(requestParams);
                     if (StringUtils.isNotBlank(response)) {
-                        CACHE.put(requestModelObject, response);
+                        AbstractFoursquareResponse abstractFoursquareResponse;
+                        if (Operation.EXPLORE.equals(requestParams.getOperation())) {
+                            abstractFoursquareResponse = JSONDeserializer.fromString(response, Explore.class);
+                        } else {
+                            abstractFoursquareResponse = null;
+                        }
+                        CACHE.put(requestParams, abstractFoursquareResponse);
                     } else {
-                        return response;
+                        return null;
                     }
                 }
             }
         }
-        return CACHE.get(requestModelObject);
+        return CACHE.get(requestParams);
     }
 
 }

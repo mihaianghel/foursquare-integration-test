@@ -11,14 +11,15 @@ The frameworks and libraries that were used are:
 * **Vaadin**- for UI
 * **Apache HTTP Client** - for http calls
 * **Apache Commons IO/Lang** - utility libraries
+* **Lombok** - for reducing boilerplate code
 
 
 ##Approach
-The application has a main service which calls an HTTP client. The client supports a maximum
-of 50 concurrent connections and has a 5 second timeout set. The response from the Foursquare
-API is cached to avoid unnecessary trips. The cache is flushed every minute (for the sake of
-the demo) in order to avoid memory issues. The response from Foursquare API is deserialized
-using Gson library and then forwarded to the view component for rendering.
+The application has a GUI component which calls a service with the data selected by the user.
+The service calls a DAO layer, which in the current implementation is an in-memory cache.
+This is populated by regularly calling the Foursquare API through an HTTP client which supports
+50 concurrent connections and has a timeout set for 5 seconds. The response from the API is
+deserialized using Gson library, stored in the cache and sent to the view component for rendering.
 
 
 ##Build and start the app
@@ -40,22 +41,3 @@ After starting the application you can access it in the browser:
 ```
 http://localhost:8080/foursquare/explore
 ```
-
-
-##Notes
-Due to time constraints I did not write unit tests for all classes. I have tested the
-service class, by injecting an instance of the deserializer instead of mocking it. In
-this way the JSON deserializer was tested partially. It is not the best approach but
-this was a tradeoff.
-
-UPDATE: in the second day I have committed more unit tests and refactored the existing
-ones for a better code coverage and for sticking to the best practices.
-
-
-##Improvements
-
-* Unit tests for better coverage
-* Improved parsing using model objects for the response from the service
-* Caching should not be in memory
-* The UI doesn't respect the separation of concerns paradigm
-* Validations of the user input

@@ -1,5 +1,6 @@
 package com.andigital.foursquare.dao;
 
+import com.andigital.foursquare.domain.AbstractFoursquareResponse;
 import com.andigital.foursquare.domain.RequestParams;
 
 /**
@@ -7,5 +8,5 @@ import com.andigital.foursquare.domain.RequestParams;
  */
 public interface FoursquareDAO {
 
-    String getFoursquareMetadata(RequestParams requestModelObject);
+    AbstractFoursquareResponse getFoursquareMetadata(RequestParams requestModelObject);
 }
