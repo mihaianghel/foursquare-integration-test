@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.andigital.foursquare.client.AbstractFoursquareClient;
-import com.andigital.foursquare.model.RequestModelObject;
+import com.andigital.foursquare.domain.RequestParams;
 import com.andigital.foursquare.util.Operation;
 
 import static com.andigital.foursquare.util.Constants.*;
@@ -42,10 +42,10 @@ public class FoursquareClientImpl extends AbstractFoursquareClient {
 	
 	@PostConstruct
 	public void init() {
-		HttpConnectionManagerParams params = new HttpConnectionManagerParams();
+		final HttpConnectionManagerParams params = new HttpConnectionManagerParams();
 		params.setConnectionTimeout(5000);
 		params.setMaxTotalConnections(50);
-		MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
+		final MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
 		connectionManager.setParams(params);
 		httpClient = new HttpClient(connectionManager);
 		LOG.info("HTTP client initialised");
@@ -59,10 +59,10 @@ public class FoursquareClientImpl extends AbstractFoursquareClient {
 	}
 
 	@Override
-	public String execute(final RequestModelObject model, final Operation operation) {
+	public String execute(final RequestParams requestParams, final Operation operation) {
 
 		try {
-			final String url = buldRequestURL(model, operation);
+			final String url = buldRequestURL(requestParams, operation);
 		    final GetMethod get = new GetMethod(url);
 		    LOG.info("Executing request " + url);
 
@@ -81,14 +81,14 @@ public class FoursquareClientImpl extends AbstractFoursquareClient {
 		return null;
 	}
 
-	private String buldRequestURL(final RequestModelObject modelObject, final Operation operation) throws URISyntaxException {
+	private String buldRequestURL(final RequestParams requestParams, final Operation operation) throws URISyntaxException {
 		
 		final List<NameValuePair> requestQueryParams = new LinkedList<>();
 		addAuthenticationParams(requestQueryParams);
-		addUserInputParams(requestQueryParams, modelObject);
+		addUserInputParams(requestQueryParams, requestParams);
 		addVersionParam(requestQueryParams);
 
-		URIBuilder builder = new URIBuilder().setHost(endpoint.concat(operation.getPath()))
+		final URIBuilder builder = new URIBuilder().setHost(endpoint.concat(operation.getPath()))
 				.setParameters(requestQueryParams);
 		return builder.toString().replaceFirst("//", StringUtils.EMPTY);
 	}
@@ -98,7 +98,7 @@ public class FoursquareClientImpl extends AbstractFoursquareClient {
 		queryParams.add(new BasicNameValuePair(CLIENT_SECRET, clientSecret));
 	}
 
-	private void addUserInputParams(final List<NameValuePair> queryParams, final RequestModelObject modelObject) {
+	private void addUserInputParams(final List<NameValuePair> queryParams, final RequestParams modelObject) {
 		queryParams.add(new BasicNameValuePair(NEAR, modelObject.getLocation()));
 		queryParams.add(new BasicNameValuePair(RADIUS, modelObject.getRadius().toString()));
 		queryParams.add(new BasicNameValuePair(LIMIT, modelObject.getLimit().toString()));

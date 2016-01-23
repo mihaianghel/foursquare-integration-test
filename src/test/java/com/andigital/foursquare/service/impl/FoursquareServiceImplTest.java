@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.andigital.foursquare.dto.RequestParamsDTO;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +20,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.andigital.foursquare.client.AbstractFoursquareClient;
 import com.andigital.foursquare.model.AbstractModel;
 import com.andigital.foursquare.model.Meta;
-import com.andigital.foursquare.model.RequestModelObject;
+import com.andigital.foursquare.domain.RequestParams;
 import com.andigital.foursquare.serialization.JSONDeserializer;
 import com.andigital.foursquare.util.Operation;
 import com.google.gson.JsonObject;
@@ -36,7 +37,7 @@ import static com.andigital.foursquare.util.TestDataProvider.*;
 public class FoursquareServiceImplTest {
 	
 	@Mock private AbstractFoursquareClient mockClient;
-	@Mock private ConcurrentHashMap<RequestModelObject, String> mockCache;
+	@Mock private ConcurrentHashMap<RequestParams, String> mockCache;
 	@Mock private JSONDeserializer<AbstractModel> mockJsonDeserializer;
 	@InjectMocks private FoursquareServiceImpl service = new FoursquareServiceImpl();
 	
@@ -59,7 +60,7 @@ public class FoursquareServiceImplTest {
 		when(mockCache.containsKey(getRequestMockData())).thenReturn(false).thenReturn(false);
 		
 		//when
-		Collection<AbstractModel> result = service.execute("london", 20, 5, Operation.EXPLORE);
+		Collection<AbstractModel> result = service.execute(new RequestParamsDTO("london", 20, 5, Operation.EXPLORE));
 	
 		//then
 		assertEquals(2, result.size());
@@ -69,11 +70,11 @@ public class FoursquareServiceImplTest {
 	@Test
 	public void requestGoesToCache() {
 		//when
-		Collection<AbstractModel> result = service.execute("london", 20, 5, Operation.EXPLORE);
+		Collection<AbstractModel> result = service.execute(new RequestParamsDTO("london", 20, 5, Operation.EXPLORE));
 	
 		//then
 		assertEquals(2, result.size());
-		verify(mockCache, times(0)).put(any(RequestModelObject.class), anyString());
+		verify(mockCache, times(0)).put(any(RequestParams.class), anyString());
 	}
 	
 	@Test
@@ -82,7 +83,7 @@ public class FoursquareServiceImplTest {
 		when(mockCache.get(getRequestMockData())).thenReturn("{broken response}");
 		
 		//when
-		Collection<AbstractModel> result = service.execute("london", 20, 5, Operation.EXPLORE);
+		Collection<AbstractModel> result = service.execute(new RequestParamsDTO("london", 20, 5, Operation.EXPLORE));
 	
 		//then
 		assertTrue(result.isEmpty());
@@ -94,7 +95,7 @@ public class FoursquareServiceImplTest {
 		when(mockJsonDeserializer.unmarshallMeta(any(JsonObject.class))).thenReturn(new Meta(404, null));
 		
 		//when
-		Collection<AbstractModel> result = service.execute("london", 20, 5, Operation.EXPLORE);
+		Collection<AbstractModel> result = service.execute(new RequestParamsDTO("london", 20, 5, Operation.EXPLORE));
 	
 		//then
 		assertTrue(result.isEmpty());

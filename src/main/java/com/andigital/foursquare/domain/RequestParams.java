@@ -1,6 +1,6 @@
-package com.andigital.foursquare.model;
+package com.andigital.foursquare.domain;
 
-public class RequestModelObject {
+public class RequestParams {
 	
 	private String location;
 	
@@ -8,8 +8,7 @@ public class RequestModelObject {
 	
 	private Integer limit;
 
-	public RequestModelObject(String location, Integer radius, Integer limit) {
-		super();
+	public RequestParams(String location, Integer radius, Integer limit) {
 		this.location = location;
 		this.radius = radius;
 		this.limit = limit;
@@ -45,7 +44,7 @@ public class RequestModelObject {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		RequestModelObject other = (RequestModelObject) obj;
+		RequestParams other = (RequestParams) obj;
 		if (limit == null) {
 			if (other.limit != null)
 				return false;

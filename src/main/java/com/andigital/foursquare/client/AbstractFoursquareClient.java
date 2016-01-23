@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Value;
 
-import com.andigital.foursquare.model.RequestModelObject;
+import com.andigital.foursquare.domain.RequestParams;
 import com.andigital.foursquare.util.Operation;
 
 /**
@@ -36,7 +36,7 @@ public abstract class AbstractFoursquareClient {
 	 * @param operation - /explore in this case. Available for extension
 	 * @return String representation of the response from Foursquare service
 	 */
-	public abstract String execute(RequestModelObject model, Operation operation);
+	public abstract String execute(RequestParams model, Operation operation);
 	
 	/**
 	 * Destroy HTTP client

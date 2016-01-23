@@ -9,7 +9,7 @@ import org.apache.commons.io.IOUtils;
 
 import com.andigital.foursquare.model.AbstractModel;
 import com.andigital.foursquare.model.ExploreResponseModelObject;
-import com.andigital.foursquare.model.RequestModelObject;
+import com.andigital.foursquare.domain.RequestParams;
 
 /**
  * Utility class for providing test data
@@ -40,7 +40,7 @@ public class TestDataProvider {
 	/**
 	 * Returns the a model object with the request parameters
 	 */
-	public static RequestModelObject getRequestMockData() {
-		return new RequestModelObject("london", 20, 5);
+	public static RequestParams getRequestMockData() {
+		return new RequestParams("london", 20, 5);
 	}
 }

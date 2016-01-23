@@ -1,5 +1,6 @@
 package com.andigital.foursquare.gui;
 
+import com.andigital.foursquare.dto.RequestParamsDTO;
 import com.andigital.foursquare.model.AbstractModel;
 import com.andigital.foursquare.model.ExploreResponseModelObject;
 import com.andigital.foursquare.service.FoursquareService;
@@ -105,8 +106,10 @@ final class FoursquarePocUI extends UI {
 				cb1.validate();
 				cb2.validate();
 
-				Collection<AbstractModel> response = foursquareService.execute(tf.getValue(),
-						Integer.valueOf(cb1.getValue().toString()), Integer.valueOf(cb2.getValue().toString()), Operation.EXPLORE);
+                final RequestParamsDTO paramsDTO = new RequestParamsDTO(tf.getValue(),
+                        Integer.valueOf(cb1.getValue().toString()), Integer.valueOf(cb2.getValue().toString()), Operation.EXPLORE);
+
+				Collection<AbstractModel> response = foursquareService.execute(paramsDTO);
 				if (!response.isEmpty()) {
 					t.removeAllItems();
 					t.setVisible(true);

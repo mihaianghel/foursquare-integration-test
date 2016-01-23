@@ -1,7 +1,13 @@
-# IDE specific
+# Eclipse
 .settings/
 bin/
 target
 .classpath
 .project
 .git/
+
+# Intellij
+foursquare-integration.iml
+.idea/
+
+
