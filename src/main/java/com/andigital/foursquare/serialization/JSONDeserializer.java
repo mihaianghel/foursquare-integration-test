@@ -20,14 +20,14 @@ public class JSONDeserializer {
     /**
      * Deserialise Json
      * @param json string representation of the json
-     * @param clazz return type
+     * @param aClass return type
      * @return type T object
      */
-    public static <T> T fromString(final String json, final Class<T> clazz) {
+    public static <T> T fromString(final String json, final Class<T> aClass) {
         if (StringUtils.isNotBlank(json)) {
             try {
                 final JsonElement jsonElement = new JsonParser().parse(json);
-                return GSON.fromJson(jsonElement, clazz);
+                return GSON.fromJson(jsonElement, aClass);
             } catch (JsonSyntaxException e) {
                 LOGGER.error("Failed to parse string", e);
             }

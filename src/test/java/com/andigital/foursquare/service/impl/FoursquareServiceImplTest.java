@@ -2,12 +2,10 @@ package com.andigital.foursquare.service.impl;
 
 import com.andigital.foursquare.dao.FoursquareDAO;
 import com.andigital.foursquare.domain.AbstractFoursquareResponse;
-import com.andigital.foursquare.domain.Explore;
 import com.andigital.foursquare.domain.RequestParams;
 import com.andigital.foursquare.dto.ExploreResponseDTO;
 import com.andigital.foursquare.dto.RequestParamsDTO;
 import com.andigital.foursquare.dto.ResponseDTO;
-import com.andigital.foursquare.serialization.JSONDeserializer;
 import com.andigital.foursquare.util.Operation;
 import com.google.gson.JsonObject;
 import org.junit.Test;
@@ -20,7 +18,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.io.IOException;
 import java.util.Collection;
 
-import static com.andigital.foursquare.util.TestDataProvider.getMockResponseFromFoursquareAPI;
+import static com.andigital.foursquare.util.TestDataProvider.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
@@ -51,7 +49,7 @@ public class FoursquareServiceImplTest {
 	@Test
 	public void testCallIsCorrectlyMade() throws IOException {
 		//given
-		final AbstractFoursquareResponse response = JSONDeserializer.fromString(getMockResponseFromFoursquareAPI(), Explore.class);
+		final AbstractFoursquareResponse response = getFoursquareParsedData();
 		when(foursquareDAO.getFoursquareMetadata(any(RequestParams.class))).thenReturn(response);
 
 		//when

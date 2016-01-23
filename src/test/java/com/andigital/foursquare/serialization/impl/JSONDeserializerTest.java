@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static com.andigital.foursquare.util.TestDataProvider.getMockResponseFromFoursquareAPI;
+import static com.andigital.foursquare.util.TestDataProvider.*;
 import static org.junit.Assert.*;
 
 /**
@@ -18,7 +18,7 @@ public class JSONDeserializerTest {
 
 	@Test
 	public void deserializeResponseFromFoursquareAPI() throws IOException {
-        AbstractFoursquareResponse response = JSONDeserializer.fromString(getMockResponseFromFoursquareAPI(), Explore.class);
+        AbstractFoursquareResponse response = getFoursquareParsedData();
 
         assertTrue(response instanceof Explore);
         assertResponse(response);

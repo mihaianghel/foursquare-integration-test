@@ -1,6 +1,9 @@
 package com.andigital.foursquare.util;
 
+import com.andigital.foursquare.domain.AbstractFoursquareResponse;
+import com.andigital.foursquare.domain.Explore;
 import com.andigital.foursquare.domain.RequestParams;
+import com.andigital.foursquare.serialization.JSONDeserializer;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -27,5 +30,9 @@ public class TestDataProvider {
 	 */
 	public static RequestParams getRequestMockData(final Operation operation) {
 		return new RequestParams("london", 20, 5, operation);
+	}
+
+	public static AbstractFoursquareResponse getFoursquareParsedData() throws IOException {
+		return JSONDeserializer.fromString(getMockResponseFromFoursquareAPI(), Explore.class);
 	}
 }
