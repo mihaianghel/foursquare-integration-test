@@ -1,10 +1,9 @@
 package com.andigital.foursquare.service;
 
-import java.util.Collection;
-
 import com.andigital.foursquare.dto.RequestParamsDTO;
-import com.andigital.foursquare.model.AbstractModel;
-import com.andigital.foursquare.util.Operation;
+import com.andigital.foursquare.dto.ResponseDTO;
+
+import java.util.Collection;
 
 
 /**
@@ -15,8 +14,8 @@ public interface FoursquareService {
 	/**
 	 * Processes data from the user and makes a call to the http client
 	 * @param requestParams parameters of the request
-	 * @return collection of {@link AbstractModel} objects
+	 * @return collection of {@link ResponseDTO} objects
 	 */
-	Collection<AbstractModel> execute(RequestParamsDTO requestParams);
+	Collection<ResponseDTO> execute(RequestParamsDTO requestParams);
 
 }

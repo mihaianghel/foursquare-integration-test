@@ -1,16 +1,8 @@
 package com.andigital.foursquare.client.impl;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URISyntaxException;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
+import com.andigital.foursquare.client.AbstractFoursquareClient;
+import com.andigital.foursquare.domain.RequestParams;
+import com.andigital.foursquare.util.Operation;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -24,9 +16,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.andigital.foursquare.client.AbstractFoursquareClient;
-import com.andigital.foursquare.domain.RequestParams;
-import com.andigital.foursquare.util.Operation;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URISyntaxException;
+import java.util.LinkedList;
+import java.util.List;
 
 import static com.andigital.foursquare.util.Constants.*;
 
@@ -59,10 +57,15 @@ public class FoursquareClientImpl extends AbstractFoursquareClient {
 	}
 
 	@Override
-	public String execute(final RequestParams requestParams, final Operation operation) {
+	public String execute(final RequestParams requestParams) {
+
+		if (!Operation.EXPLORE.equals(requestParams.getOperation())) {
+			LOG.error("Unsupported operation");
+			return null;
+		}
 
 		try {
-			final String url = buldRequestURL(requestParams, operation);
+			final String url = buildExploreRequestURL(requestParams, requestParams.getOperation());
 		    final GetMethod get = new GetMethod(url);
 		    LOG.info("Executing request " + url);
 
@@ -81,7 +84,7 @@ public class FoursquareClientImpl extends AbstractFoursquareClient {
 		return null;
 	}
 
-	private String buldRequestURL(final RequestParams requestParams, final Operation operation) throws URISyntaxException {
+	private String buildExploreRequestURL(final RequestParams requestParams, final Operation operation) throws URISyntaxException {
 		
 		final List<NameValuePair> requestQueryParams = new LinkedList<>();
 		addAuthenticationParams(requestQueryParams);

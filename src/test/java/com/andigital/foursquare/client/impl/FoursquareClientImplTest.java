@@ -1,10 +1,6 @@
 package com.andigital.foursquare.client.impl;
 
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.lang.reflect.Field;
-
+import com.andigital.foursquare.util.Operation;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -16,11 +12,12 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.andigital.foursquare.util.Operation;
+import java.io.IOException;
+import java.lang.reflect.Field;
 
-import static com.andigital.foursquare.util.TestDataProvider.*;
-import static org.mockito.Mockito.*;
+import static com.andigital.foursquare.util.TestDataProvider.getRequestMockData;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.verify;
 
 /**
  * Test for {@link FoursquareClientImpl}
@@ -28,10 +25,10 @@ import static org.junit.Assert.*;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class FoursquareClientImplTest {
-	
+
 	@Mock HttpClient mockHttpClient;
 	private FoursquareClientImpl client = new FoursquareClientImpl();
-	
+
 	@Before
 	public void setUp() {
         ReflectionTestUtils.setField(client, "endpoint", "https://api.foursquare");
@@ -40,32 +37,37 @@ public class FoursquareClientImplTest {
         ReflectionTestUtils.setField(client, "clientSecret", "12AB");
 		injectHttpClient();
 	}
-	
+
 	@Test
 	public void testBrokenUri() {
 		//given
 		ReflectionTestUtils.setField(client, "endpoint", "{}://");
-		
+
 		//when
-		String response = client.execute(getRequestMockData(), Operation.EXPLORE);
-		
+		String response = client.execute(getRequestMockData(Operation.EXPLORE));
+
 		//then
 		assertNull(response);
 	}
-	
-	
+
+
 	@Test
 	public void testCallIsExecutedToTheCorrectEndpoint() throws HttpException, IOException {
 		//when
-		client.execute(getRequestMockData(), Operation.EXPLORE);
-		
+		client.execute(getRequestMockData(Operation.EXPLORE));
+
 		//then
 		ArgumentCaptor<GetMethod> argument = ArgumentCaptor.forClass(GetMethod.class);
 		verify(mockHttpClient).executeMethod(argument.capture());
 		assertEquals("https://api.foursquare/explore?client_id=1A2B&client_secret=12AB&near=london&radius=20&limit=5&v=v2",
 				argument.getValue().getURI().toString());
 	}
-	
+
+	@Test
+	public void testUnsupportedOperation() {
+		assertNull(client.execute(getRequestMockData(null)));
+	}
+
 	private void injectHttpClient() {
 		try {
 			final Field field = FoursquareClientImpl.class.getDeclaredField("httpClient");

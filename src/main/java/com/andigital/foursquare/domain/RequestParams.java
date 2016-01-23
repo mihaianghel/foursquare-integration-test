@@ -1,5 +1,11 @@
 package com.andigital.foursquare.domain;
 
+import com.andigital.foursquare.util.Operation;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
 public class RequestParams {
 	
 	private String location;
@@ -8,58 +14,28 @@ public class RequestParams {
 	
 	private Integer limit;
 
-	public RequestParams(String location, Integer radius, Integer limit) {
-		this.location = location;
-		this.radius = radius;
-		this.limit = limit;
-	}
+    private Operation operation;
 
-	public String getLocation() {
-		return location;
-	}
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-	public Integer getRadius() {
-		return radius;
-	}
+        final RequestParams that = (RequestParams) o;
 
-	public Integer getLimit() {
-		return limit;
-	}
+        if (location != null ? !location.equals(that.location) : that.location != null) return false;
+        if (radius != null ? !radius.equals(that.radius) : that.radius != null) return false;
+        if (limit != null ? !limit.equals(that.limit) : that.limit != null) return false;
+        return operation == that.operation;
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((limit == null) ? 0 : limit.hashCode());
-		result = prime * result + ((location == null) ? 0 : location.hashCode());
-		result = prime * result + ((radius == null) ? 0 : radius.hashCode());
-		return result;
-	}
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		RequestParams other = (RequestParams) obj;
-		if (limit == null) {
-			if (other.limit != null)
-				return false;
-		} else if (!limit.equals(other.limit))
-			return false;
-		if (location == null) {
-			if (other.location != null)
-				return false;
-		} else if (!location.equals(other.location))
-			return false;
-		if (radius == null) {
-			if (other.radius != null)
-				return false;
-		} else if (!radius.equals(other.radius))
-			return false;
-		return true;
-	}
+    @Override
+    public int hashCode() {
+        int result = location != null ? location.hashCode() : 0;
+        result = 31 * result + (radius != null ? radius.hashCode() : 0);
+        result = 31 * result + (limit != null ? limit.hashCode() : 0);
+        result = 31 * result + (operation != null ? operation.hashCode() : 0);
+        return result;
+    }
 }

@@ -1,32 +1,38 @@
 package com.andigital.foursquare.serialization;
 
-import java.util.Collection;
-import com.google.gson.JsonObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Interface for Json deserializers
+ * Json deserializers
  */
-public interface JSONDeserializer<T> {
-	
-	/**
-	 * Deserialize a json string
-	 * @param json object to deserialize
-	 * @return JSON representation as {@link JsonObject}
-	 */
-	JsonObject deserialise(String json);
-	
-	/**
-	 * Unmarshall 'meta' section of the response
-	 * @param meta section represented as {@link JsonObject}
-	 * @return object of generic type T
-	 */
-	T unmarshallMeta(JsonObject meta);
-	
-	/**
-	 * Unmarshall 'response' section of the response
-	 * @param response section represented as {@link JsonObject}
-	 * @return list of objects of generic type T
-	 */
-	Collection<T> unmarshallResponse(JsonObject response);
+public class JSONDeserializer {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JSONDeserializer.class);
+
+    private static final Gson GSON = new Gson();
+
+    /**
+     * Deserialise Json
+     * @param json string representation of the json
+     * @param clazz return type
+     * @return type T object
+     */
+    public static <T> T fromString(final String json, final Class<T> clazz) {
+        if (StringUtils.isNotBlank(json)) {
+            try {
+                final JsonElement jsonElement = new JsonParser().parse(json);
+                return GSON.fromJson(jsonElement, clazz);
+            } catch (JsonSyntaxException e) {
+                LOGGER.error("Failed to parse string", e);
+            }
+        }
+        return null;
+    }
 
 }

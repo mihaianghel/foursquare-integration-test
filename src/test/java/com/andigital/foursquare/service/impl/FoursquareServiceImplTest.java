@@ -1,32 +1,26 @@
 package com.andigital.foursquare.service.impl;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
-
+import com.andigital.foursquare.dao.FoursquareDAO;
+import com.andigital.foursquare.domain.RequestParams;
+import com.andigital.foursquare.dto.ExploreResponseDTO;
 import com.andigital.foursquare.dto.RequestParamsDTO;
-import org.junit.Before;
+import com.andigital.foursquare.dto.ResponseDTO;
+import com.andigital.foursquare.util.Operation;
+import com.google.gson.JsonObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.andigital.foursquare.client.AbstractFoursquareClient;
-import com.andigital.foursquare.model.AbstractModel;
-import com.andigital.foursquare.model.Meta;
-import com.andigital.foursquare.domain.RequestParams;
-import com.andigital.foursquare.serialization.JSONDeserializer;
-import com.andigital.foursquare.util.Operation;
-import com.google.gson.JsonObject;
+import java.io.IOException;
+import java.util.Collection;
 
 import static org.mockito.Mockito.*;
 import static com.andigital.foursquare.util.TestDataProvider.*;
+import static org.junit.Assert.*;
+
 
 /**
  * Test for {@link FoursquareServiceImpl}
@@ -35,80 +29,65 @@ import static com.andigital.foursquare.util.TestDataProvider.*;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(JsonObject.class)
 public class FoursquareServiceImplTest {
-	
-	@Mock private AbstractFoursquareClient mockClient;
-	@Mock private ConcurrentHashMap<RequestParams, String> mockCache;
-	@Mock private JSONDeserializer<AbstractModel> mockJsonDeserializer;
+
+	@Mock private FoursquareDAO foursquareDAO;
 	@InjectMocks private FoursquareServiceImpl service = new FoursquareServiceImpl();
-	
-	@Before
-	public void setUp() throws IOException {
-		JsonObject mockJsonObject = PowerMockito.mock(JsonObject.class);
-		when(mockCache.containsKey(getRequestMockData())).thenReturn(true);
-		when(mockCache.get(getRequestMockData())).thenReturn(getMockResponseFromFoursquareAPI());
-		when(mockClient.execute(getRequestMockData(), Operation.EXPLORE)).thenReturn(getMockResponseFromFoursquareAPI());
-		when(mockJsonDeserializer.deserialise(getMockResponseFromFoursquareAPI())).thenReturn(mockJsonObject);
-		when(mockJsonDeserializer.unmarshallMeta(mockJsonObject)).thenReturn(new Meta(200, null));
-		when(mockJsonDeserializer.unmarshallResponse(mockJsonObject)).thenReturn(getMockResponseFromDeserializer());
-		
-		injectMockCache();
-	}
-	
+
+    @Test
+    public void testEmptyResponseFromDAOLayer() {
+        //given
+        when(foursquareDAO.getFoursquareMetadata(any(RequestParams.class))).thenReturn(null);
+
+        //when
+        Collection<ResponseDTO> result = service.execute(new RequestParamsDTO("london", 20, 5, Operation.EXPLORE));
+
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    public void testBrokenResponseFromDAOLayer() {
+        //given
+        when(foursquareDAO.getFoursquareMetadata(any(RequestParams.class))).thenReturn("123**");
+
+        //when
+        Collection<ResponseDTO> result = service.execute(new RequestParamsDTO("london", 20, 5, Operation.EXPLORE));
+
+        assertEquals(0, result.size());
+    }
+
 	@Test
-	public void requestGoesToFoursquare() throws IOException {
+	public void testCallIsCorrectlyMade() throws IOException {
 		//given
-		when(mockCache.containsKey(getRequestMockData())).thenReturn(false).thenReturn(false);
-		
+		when(foursquareDAO.getFoursquareMetadata(any(RequestParams.class))).thenReturn(getMockResponseFromFoursquareAPI());
+
 		//when
-		Collection<AbstractModel> result = service.execute(new RequestParamsDTO("london", 20, 5, Operation.EXPLORE));
-	
+		Collection<ResponseDTO> result = service.execute(new RequestParamsDTO("london", 20, 5, Operation.EXPLORE));
+
 		//then
-		assertEquals(2, result.size());
-		verify(mockCache, times(1)).put(getRequestMockData(), getMockResponseFromFoursquareAPI());
+		result.stream().forEach(
+			r -> {
+				assertTrue(r instanceof ExploreResponseDTO);
+				final ExploreResponseDTO dto = (ExploreResponseDTO) r;
+				final String name = dto.getName();
+				if ("Millennium Park".equals(name)) {
+					assertEquals("(312) 742-1168", dto.getContactNumber());
+					assertEquals(108831, dto.getCheckins());
+					assertTrue(dto.getAddress().contains("201 E Randolph St (btwn Columbus Dr & Michigan Ave)"));
+					assertTrue(dto.getAddress().contains("Chicago, IL 60601"));
+					assertTrue(dto.getAddress().contains("Statele Unite"));
+				} else if ("Chicago Riverwalk".equals(name)) {
+					assertEquals(null, dto.getContactNumber());
+					assertEquals(12827, dto.getCheckins());
+					assertTrue(dto.getAddress().contains("Chicago River (btwn Lake Shore Dr & Canal St)"));
+					assertTrue(dto.getAddress().contains("Chicago, IL 60601"));
+					assertTrue(dto.getAddress().contains("Statele Unite"));
+				} else {
+					fail();
+				}
+
+			}
+		);
 	}
-	
-	@Test
-	public void requestGoesToCache() {
-		//when
-		Collection<AbstractModel> result = service.execute(new RequestParamsDTO("london", 20, 5, Operation.EXPLORE));
-	
-		//then
-		assertEquals(2, result.size());
-		verify(mockCache, times(0)).put(any(RequestParams.class), anyString());
-	}
-	
-	@Test
-	public void responseCannotBeUnmarshalled() {
-		//given
-		when(mockCache.get(getRequestMockData())).thenReturn("{broken response}");
-		
-		//when
-		Collection<AbstractModel> result = service.execute(new RequestParamsDTO("london", 20, 5, Operation.EXPLORE));
-	
-		//then
-		assertTrue(result.isEmpty());
-	}
-	
-	@Test
-	public void errorFromFoursquareAPI() {
-		//given
-		when(mockJsonDeserializer.unmarshallMeta(any(JsonObject.class))).thenReturn(new Meta(404, null));
-		
-		//when
-		Collection<AbstractModel> result = service.execute(new RequestParamsDTO("london", 20, 5, Operation.EXPLORE));
-	
-		//then
-		assertTrue(result.isEmpty());
-	}
-	
-	private void injectMockCache() {
-		try {
-			final Field field = FoursquareServiceImpl.class.getDeclaredField("CACHE");
-			field.setAccessible(true);
-			field.set(service, mockCache);
-		} catch (NoSuchFieldException | IllegalAccessException ex) {
-			fail("Failed to inject mock cache: " + ex);
-		}
-	}
-	
+
+
 }

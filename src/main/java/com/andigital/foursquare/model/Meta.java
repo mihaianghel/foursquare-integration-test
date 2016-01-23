@@ -1,22 +1,12 @@
 package com.andigital.foursquare.model;
 
-public class Meta extends AbstractModel{
-	
-	private int statusCode;
-	
-	private String error;
+import lombok.Data;
 
-	public Meta(int statusCode, String error) {
-		this.statusCode = statusCode;
-		this.error = error;
-	}
+@Data
+public class Meta {
 
-	public int getStatusCode() {
-		return statusCode;
-	}
+    private int code;
 
-	public String getError() {
-		return error;
-	}
+    private String errorDetail;
 
 }

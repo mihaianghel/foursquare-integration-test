@@ -1,8 +1,8 @@
 package com.andigital.foursquare.gui;
 
+import com.andigital.foursquare.dto.ExploreResponseDTO;
 import com.andigital.foursquare.dto.RequestParamsDTO;
-import com.andigital.foursquare.model.AbstractModel;
-import com.andigital.foursquare.model.ExploreResponseModelObject;
+import com.andigital.foursquare.dto.ResponseDTO;
 import com.andigital.foursquare.service.FoursquareService;
 import com.andigital.foursquare.util.Operation;
 import com.vaadin.annotations.Theme;
@@ -109,17 +109,17 @@ final class FoursquarePocUI extends UI {
                 final RequestParamsDTO paramsDTO = new RequestParamsDTO(tf.getValue(),
                         Integer.valueOf(cb1.getValue().toString()), Integer.valueOf(cb2.getValue().toString()), Operation.EXPLORE);
 
-				Collection<AbstractModel> response = foursquareService.execute(paramsDTO);
+				Collection<ResponseDTO> response = foursquareService.execute(paramsDTO);
 				if (!response.isEmpty()) {
 					t.removeAllItems();
 					t.setVisible(true);
 
-					for (AbstractModel model : response) {
-						ExploreResponseModelObject exploreOption = (ExploreResponseModelObject) model;
-						final List<String> address = exploreOption.getAddress();
+					for (ResponseDTO resp : response) {
+                        ExploreResponseDTO exploreOption = (ExploreResponseDTO) resp;
+						final Collection<String> address = exploreOption.getAddress();
 						final String addressLine = StringUtils.join(address, " ");
 						t.addItem(new Object[] { exploreOption.getName(), exploreOption.getContactNumber(),
-								addressLine, exploreOption.getCheckins() }, null);
+								addressLine, Integer.toString(exploreOption.getCheckins()) }, null);
 					}
 
 				} else {

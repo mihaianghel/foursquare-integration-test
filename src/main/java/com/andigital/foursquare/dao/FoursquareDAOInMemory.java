@@ -1,10 +1,7 @@
 package com.andigital.foursquare.dao;
 
 import com.andigital.foursquare.client.AbstractFoursquareClient;
-import com.andigital.foursquare.model.AbstractModel;
 import com.andigital.foursquare.domain.RequestParams;
-import com.andigital.foursquare.serialization.JSONDeserializer;
-import com.andigital.foursquare.util.Operation;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,12 +31,12 @@ public class FoursquareDAOInMemory implements FoursquareDAO {
     }
 
     @Override
-    public String getFousquareMetadata(RequestParams requestModelObject) {
+    public String getFoursquareMetadata(RequestParams requestModelObject) {
         if (!CACHE.containsKey(requestModelObject)) {
             synchronized (CACHE) {
                 if (!CACHE.containsKey(requestModelObject)) {
                     LOGGER.info("Object not found in cache. Making request to Foursquare Service");
-                    final String response = foursquareClient.execute(requestModelObject, Operation.EXPLORE);
+                    final String response = foursquareClient.execute(requestModelObject);
                     if (StringUtils.isNotBlank(response)) {
                         CACHE.put(requestModelObject, response);
                     } else {

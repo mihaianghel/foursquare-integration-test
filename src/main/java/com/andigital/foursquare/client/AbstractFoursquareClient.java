@@ -1,11 +1,9 @@
 package com.andigital.foursquare.client;
 
-import java.io.IOException;
-
+import com.andigital.foursquare.domain.RequestParams;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.andigital.foursquare.domain.RequestParams;
-import com.andigital.foursquare.util.Operation;
+import java.io.IOException;
 
 /**
  * Abstract client for HTTP calls
@@ -33,10 +31,9 @@ public abstract class AbstractFoursquareClient {
 	/**
 	 * Execute HTTP calls
 	 * @param model object encapsulating user input
-	 * @param operation - /explore in this case. Available for extension
 	 * @return String representation of the response from Foursquare service
 	 */
-	public abstract String execute(RequestParams model, Operation operation);
+	public abstract String execute(RequestParams model);
 	
 	/**
 	 * Destroy HTTP client
