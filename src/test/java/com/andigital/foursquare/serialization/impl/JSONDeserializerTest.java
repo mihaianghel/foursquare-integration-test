@@ -1,6 +1,6 @@
 package com.andigital.foursquare.serialization.impl;
 
-import com.andigital.foursquare.model.*;
+import com.andigital.foursquare.domain.*;
 import com.andigital.foursquare.serialization.JSONDeserializer;
 import org.apache.commons.httpclient.HttpStatus;
 import org.junit.Test;

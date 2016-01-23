@@ -1,4 +1,4 @@
-package com.andigital.foursquare.model;
+package com.andigital.foursquare.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

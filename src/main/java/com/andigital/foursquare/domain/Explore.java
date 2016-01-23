@@ -1,4 +1,4 @@
-package com.andigital.foursquare.model;
+package com.andigital.foursquare.domain;
 
 public class Explore extends AbstractFoursquareResponse {
 

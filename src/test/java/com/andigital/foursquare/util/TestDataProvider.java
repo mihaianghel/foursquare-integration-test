@@ -23,7 +23,7 @@ public class TestDataProvider {
 
 
 	/**
-	 * Returns the a model object with the request parameters
+	 * Returns the a domain object with the request parameters
 	 */
 	public static RequestParams getRequestMockData(final Operation operation) {
 		return new RequestParams("london", 20, 5, operation);

@@ -5,7 +5,7 @@ import com.andigital.foursquare.domain.RequestParams;
 import com.andigital.foursquare.dto.ExploreResponseDTO;
 import com.andigital.foursquare.dto.RequestParamsDTO;
 import com.andigital.foursquare.dto.ResponseDTO;
-import com.andigital.foursquare.model.*;
+import com.andigital.foursquare.domain.*;
 import com.andigital.foursquare.serialization.JSONDeserializer;
 import com.andigital.foursquare.service.FoursquareService;
 import org.apache.commons.httpclient.HttpStatus;
