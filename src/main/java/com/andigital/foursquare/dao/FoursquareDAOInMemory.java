@@ -5,13 +5,11 @@ import com.andigital.foursquare.domain.AbstractFoursquareResponse;
 import com.andigital.foursquare.domain.Explore;
 import com.andigital.foursquare.domain.RequestParams;
 import com.andigital.foursquare.serialization.JSONDeserializer;
-import com.andigital.foursquare.util.Operation;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,15 +17,14 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * In-Memory implementation of FoursquareDAO
  */
-@Component
 public class FoursquareDAOInMemory implements FoursquareDAO {
-
-    @Autowired
-    private FoursquareClient foursquareClient;
 
     private Map<RequestParams, AbstractFoursquareResponse> CACHE = new ConcurrentHashMap();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FoursquareDAOInMemory.class);
+
+    @Autowired
+    private FoursquareClient foursquareClient;
 
     //invalidate the cache
     //set to every minute for testing purposes
@@ -45,12 +42,8 @@ public class FoursquareDAOInMemory implements FoursquareDAO {
                     LOGGER.info("Object not found in cache. Making request to Foursquare Service");
                     final String response = foursquareClient.execute(requestParams);
                     if (StringUtils.isNotBlank(response)) {
-                        AbstractFoursquareResponse abstractFoursquareResponse;
-                        if (Operation.EXPLORE.equals(requestParams.getOperation())) {
-                            abstractFoursquareResponse = JSONDeserializer.fromString(response, Explore.class);
-                        } else {
-                            abstractFoursquareResponse = null;
-                        }
+                        final AbstractFoursquareResponse abstractFoursquareResponse
+                                = JSONDeserializer.fromString(response, Explore.class);
                         CACHE.put(requestParams, abstractFoursquareResponse);
                     } else {
                         return null;

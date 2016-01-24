@@ -8,5 +8,5 @@ import com.andigital.foursquare.domain.RequestParams;
  */
 public interface FoursquareDAO {
 
-    AbstractFoursquareResponse getFoursquareMetadata(RequestParams requestModelObject);
+    AbstractFoursquareResponse getFoursquareMetadata(RequestParams requestParams);
 }

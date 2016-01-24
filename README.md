@@ -3,10 +3,11 @@ Foursquare Integration Service - proof of concept
 
 ##Summary
 
-This application is a proof of concept for an integration with the Foursquare API
+This application is a proof of concept for an integration with the Foursquare API.
+
 The frameworks and libraries that were used are:
 * **Spring Boot** - for fast bootstrapping of the web app
-* **JUnit, Mockito and Powermock** - for unit testing
+* **JUnit, Mockito** - for unit testing
 * **Gson** - for deserialization
 * **Vaadin**- for UI
 * **Apache HTTP Client** - for http calls

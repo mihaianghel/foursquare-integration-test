@@ -7,13 +7,11 @@ import com.andigital.foursquare.dto.ExploreResponseDTO;
 import com.andigital.foursquare.dto.RequestParamsDTO;
 import com.andigital.foursquare.dto.ResponseDTO;
 import com.andigital.foursquare.util.Operation;
-import com.google.gson.JsonObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -28,8 +26,7 @@ import static org.mockito.Mockito.when;
  * Test for {@link FoursquareServiceImpl}
  * @author mihaianghel
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(JsonObject.class)
+@RunWith(MockitoJUnitRunner.class)
 public class FoursquareServiceImplTest {
 
 	@Mock private FoursquareDAO foursquareDAO;

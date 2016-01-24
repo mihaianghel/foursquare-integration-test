@@ -1,0 +1,12 @@
+<infinispan
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="urn:infinispan:config:8.0 http://www.infinispan.org/schemas/infinispan-config-8.0.xsd"
+        xmlns="urn:infinispan:config:8.0">
+
+    <cache-container default-cache="default">
+        <local-cache name="local-cache">
+            <eviction strategy="LIRS" size="10" />
+        </local-cache>
+    </cache-container>
+
+</infinispan>
