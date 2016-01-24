@@ -5,9 +5,10 @@ Foursquare Integration Service - proof of concept
 
 This application is a proof of concept for an integration with the Foursquare API.
 
-The frameworks and libraries that were used are:
+####The frameworks and libraries that were used are:
 * **Spring Boot** - for fast bootstrapping of the web app
 * **JUnit, Mockito** - for unit testing
+* **Infinispan cache** - for replicated caching
 * **Gson** - for deserialization
 * **Vaadin**- for UI
 * **Apache HTTP Client** - for http calls
@@ -17,10 +18,11 @@ The frameworks and libraries that were used are:
 
 ##Approach
 The application has a GUI component which calls a service with the data selected by the user.
-The service calls a DAO layer, which in the current implementation is an in-memory cache.
-This is populated by regularly calling the Foursquare API through an HTTP client which supports
-50 concurrent connections and has a timeout set for 5 seconds. The response from the API is
-deserialized using Gson library, stored in the cache and sent to the view component for rendering.
+The service calls a DAO layer, which in the current implementation is a replicated Infinispan
+cache. This is populated by regularly calling the Foursquare API through an HTTP client which
+supports 50 concurrent connections and has a timeout set for 5 seconds. The response from the 
+API is de-serialized using Gson library, stored in the cache and sent to the view component
+for rendering.
 
 
 ##Build and start the app
@@ -42,3 +44,8 @@ After starting the application you can access it in the browser:
 ```
 http://localhost:8080/foursquare/explore
 ```
+
+##Note
+There is also a local Infinispan cache implemented which is not wired at runtime automatically
+in order to avoid bootstrapping errors due to duplicate cache manager instances registered under 
+'org.infinispan' JMX domain
