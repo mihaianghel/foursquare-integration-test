@@ -3,12 +3,13 @@ Foursquare Integration Service - proof of concept
 
 ##Summary
 
-This application is a proof of concept for an integration with the Foursquare API.
+This application is a POC for an integration with the Foursquare API. It allows searching for the most popular places
+around a location.
 
 ####The frameworks and libraries that were used are:
 * **Spring Boot** - for fast bootstrapping of the web app
 * **JUnit, Mockito** - for unit testing
-* **Infinispan cache** - for replicated caching
+* **Infinispan cache** - for caching
 * **Gson** - for deserialization
 * **Vaadin**- for UI
 * **Apache HTTP Client** - for http calls
@@ -17,11 +18,10 @@ This application is a proof of concept for an integration with the Foursquare AP
 
 
 ##Approach
-The application has a GUI component which calls a service with the data selected by the user.
-The service calls a DAO layer, which in the current implementation is a replicated Infinispan
-cache. This is populated by regularly calling the Foursquare API through an HTTP client which
-supports 50 concurrent connections and has a timeout set for 5 seconds. The response from the 
-API is de-serialized using Gson library, stored in the cache and sent to the view component
+The application has a GUI component which calls a service with the data selected by the user.The service calls a DAO 
+layer, which in the current implementation is coupled to a replicated Infinispan cache. This is populated by regularly
+calling the Foursquare API through an HTTP client which supports 50 concurrent connections and has a timeout set for 5
+seconds. The response from the API is de-serialized using Gson library, stored in the cache and sent to the view component
 for rendering.
 
 
@@ -46,6 +46,5 @@ http://localhost:8080/foursquare/explore
 ```
 
 ##Note
-There is also a local Infinispan cache implemented which is not wired at runtime automatically
-in order to avoid bootstrapping errors due to duplicate cache manager instances registered under 
-'org.infinispan' JMX domain
+There is also a local Infinispan cache implemented which is not wired at runtime automatically in order to avoid 
+bootstrapping errors due to duplicate cache manager instances registered under 'org.infinispan' JMX domain

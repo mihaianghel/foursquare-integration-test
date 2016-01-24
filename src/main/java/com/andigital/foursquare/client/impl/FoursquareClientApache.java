@@ -14,6 +14,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -37,12 +38,18 @@ public class FoursquareClientApache extends FoursquareClient {
 	protected Logger LOG = LoggerFactory.getLogger(FoursquareClient.class);
 	
 	private HttpClient httpClient;
+
+	@Value("${http.client.max.connections}")
+	protected int maxConnections;
+
+	@Value("${http.client.timeout}")
+	protected int timeout;
 	
 	@PostConstruct
 	public void init() {
 		final HttpConnectionManagerParams params = new HttpConnectionManagerParams();
-		params.setConnectionTimeout(5000);
-		params.setMaxTotalConnections(50);
+		params.setConnectionTimeout(timeout);
+		params.setMaxTotalConnections(maxConnections);
 		final MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
 		connectionManager.setParams(params);
 		httpClient = new HttpClient(connectionManager);
